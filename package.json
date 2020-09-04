@@ -8,8 +8,21 @@
     "start": "next start"
   },
   "dependencies": {
+    "firebase": "^7.19.1",
+    "js-cookie": "^2.2.1",
     "next": "9.5.3",
     "react": "16.13.1",
     "react-dom": "16.13.1"
+  },
+  "prettier": {
+    "semi": false,
+    "trailingComma": "all",
+    "singleQuote": true,
+    "printWidth": 120,
+    "tabWidth": 2
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.49",
+    "typescript": "^4.0.2"
   }
 }
