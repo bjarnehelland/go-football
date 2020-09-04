@@ -29,5 +29,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: { tournaments },
+    revalidate: 5,
   }
 }
