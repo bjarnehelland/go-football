@@ -14,8 +14,11 @@ export default function Home() {
       <main className={styles.main}>
         {auth.user ? (
           <>
-            {auth.user.name}
-            <button onClick={() => auth.signout()}>Sign out</button>
+            <div className={styles.user}>
+              <img className={styles.userImg} src={auth.user.photoUrl} alt={auth.user.name} />
+              {auth.user.name}
+              <button onClick={() => auth.signout()}>Sign out</button>
+            </div>
           </>
         ) : (
           <button onClick={() => auth.signinWithGoogle()}>Sign in</button>
