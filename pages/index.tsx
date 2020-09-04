@@ -13,7 +13,7 @@ export default function Home() {
         <Heading>Go football</Heading>
         <User />
       </Flex>
-      <Link href="/tournaments">
+      <Link href="/tournaments" as="/tournaments">
         <a>Tournaments</a>
       </Link>
     </div>
