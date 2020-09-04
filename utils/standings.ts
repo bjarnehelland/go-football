@@ -109,8 +109,6 @@ const tiebbreakRuleFn = R.curry(function (matches, rules, table) {
     })
     .reverse()
 
-  groupRules
-
   groups.forEach((group) => {
     let tiebreakTable = R.compose(generateTable, filterMatches(matches), R.map(R.prop('team')))(group)
 
@@ -152,7 +150,7 @@ function updatePositions(table, groups) {
 }
 const keyCombiner = R.curry(function compine(props, o) {
   return props.reduce((key, prop) => {
-    key += o[prop].toString()
+    key += o[prop]
     return key
   }, '')
 })
@@ -190,15 +188,6 @@ export function standings(matches, rules = []) {
 
   const tiebreak = tiebbreakRuleFn(matches)
 
-  rules.map((item) => {
-    switch (item.rule) {
-      case 'sort':
-        return sort(item.prop, item.direction)
-      case 'tiebreak':
-        return tiebreak(item.prop, item.direction)
-    }
-  })
-
   return R.pipe(
     ...rules
       .map((item) => {
@@ -206,7 +195,7 @@ export function standings(matches, rules = []) {
           case 'sort':
             return sort(item.prop, item.direction)
           case 'tiebreak':
-            return tiebreak(item.children, initialTable)
+            return tiebreak(item.children)
         }
       })
       .filter((item) => item),
