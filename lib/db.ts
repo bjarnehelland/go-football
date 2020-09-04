@@ -7,3 +7,7 @@ export function createUser(uid: string, data) {
     .doc(uid)
     .set({ uid, ...data }, { merge: true })
 }
+
+export function createTournament(name: string) {
+  return firestore.collection('tournaments').add({ name })
+}
