@@ -1,12 +1,14 @@
-import '../styles/globals.css'
-
-import { AuthProvider } from '@lib/auth'
+import { ThemeProvider } from 'theme-ui'
+import { AuthProvider } from '@/lib/auth'
+import theme from '@/styles/theme'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <AuthProvider>
-      <Component {...pageProps} />
-    </AuthProvider>
+    <ThemeProvider theme={theme}>
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
 
