@@ -1,18 +1,8 @@
 import Head from 'next/head'
-import { Flex, Heading, Button } from 'theme-ui'
+import { Flex, Heading, Link } from 'theme-ui'
 import User from '@/components/User'
-import { createTournament } from '@/lib/db'
-import { useRouter } from 'next/router'
 
 export default function Home() {
-  const router = useRouter()
-
-  async function handleCreateTournament(e) {
-    e.preventDefault()
-
-    const tournament = await createTournament('yolo')
-    router.push(`tournament/${tournament.id}`)
-  }
   return (
     <div>
       <Head>
@@ -23,7 +13,9 @@ export default function Home() {
         <Heading>Go football</Heading>
         <User />
       </Flex>
-      <Button onClick={handleCreateTournament}>+ Tournament</Button>
+      <Link href="/tournaments">
+        <a>Tournaments</a>
+      </Link>
     </div>
   )
 }
