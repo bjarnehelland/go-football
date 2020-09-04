@@ -2,10 +2,15 @@ import { GetStaticProps } from 'next'
 import Link from 'next/link'
 import db from '@/lib/firebase-admin'
 import AddTournament from '@/components/AddTournament'
+import Head from 'next/head'
 
 export default function Tournaments({ tournaments }) {
   return (
     <div>
+      <Head>
+        <title>Go football - Tournaments</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <AddTournament />
       <ul>
         {tournaments.map((t) => (
@@ -29,6 +34,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: { tournaments },
-    revalidate: 5,
+    revalidate: 1,
   }
 }

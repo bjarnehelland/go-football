@@ -1,8 +1,17 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
 import db from '@/lib/firebase-admin'
+import Head from 'next/head'
 
-export default function Tournament(props) {
-  return <div>{JSON.stringify(props)}</div>
+export default function Tournament({ tournament }) {
+  return (
+    <div>
+      <Head>
+        <title>Go football - {tournament?.name}</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      {JSON.stringify(tournament)}
+    </div>
+  )
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
