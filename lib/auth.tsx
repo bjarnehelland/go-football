@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext, createContext } from 'react'
 import Router from 'next/router'
-import cookie from 'js-cookie'
 
 import firebase from './firebase'
-//import { createUser } from './db';
+import { createUser } from './db'
 
 type ContextProps = {
   user?: {
@@ -13,12 +12,9 @@ type ContextProps = {
     token: string
     provider: string
     photoUrl: string
-    stripeRole: string
   }
 
   loading: boolean
-  //signinWithEmail,
-  //signinWithGitHub,
   signinWithGoogle: (redirect?: string) => Promise<void>
   signout: Function
 }
@@ -43,47 +39,15 @@ function useProvideAuth() {
       const user = await formatUser(rawUser)
       const { token, ...userWithoutToken } = user
 
-      //createUser(user.uid, userWithoutToken)
+      createUser(user.uid, userWithoutToken)
       setUser(user)
-
-      cookie.set('go-football-auth', true, {
-        expires: 1,
-      })
-
       setLoading(false)
       return user
     } else {
       setUser(false)
-      cookie.remove('go-football-auth')
-
       setLoading(false)
       return false
     }
-  }
-
-  const signinWithEmail = (email, password) => {
-    setLoading(true)
-    return firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((response) => {
-        handleUser(response.user)
-        Router.push('/sites')
-      })
-  }
-
-  const signinWithGitHub = (redirect) => {
-    setLoading(true)
-    return firebase
-      .auth()
-      .signInWithPopup(new firebase.auth.GithubAuthProvider())
-      .then((response) => {
-        handleUser(response.user)
-
-        if (redirect) {
-          Router.push(redirect)
-        }
-      })
   }
 
   const signinWithGoogle = (redirect) => {
@@ -118,18 +82,15 @@ function useProvideAuth() {
   return {
     user,
     loading,
-    //signinWithEmail,
-    //signinWithGitHub,
     signinWithGoogle,
     signout,
   }
 }
 
-const getStripeRole = async () => {
+const getClaim = async (claimId, defaultValue) => {
   await firebase.auth().currentUser.getIdToken(true)
   const decodedToken = await firebase.auth().currentUser.getIdTokenResult()
-
-  return decodedToken.claims.stripeRole || 'free'
+  return decodedToken.claims[claimId] || defaultValue
 }
 
 const formatUser = async (user) => {
@@ -140,6 +101,6 @@ const formatUser = async (user) => {
     token: user.xa,
     provider: user.providerData[0].providerId,
     photoUrl: user.photoURL,
-    stripeRole: await getStripeRole(),
+    //claim: await getClaim('claimId', 'free'),
   }
 }
