@@ -114,12 +114,12 @@ const tiebbreakRuleFn = R.curry(function (matches, rules, table) {
 
     tiebreakTable = R.compose(sortByPosition, ...groupRules)(tiebreakTable)
     console.table(tiebreakTable)
+
     const tiegroups = R.compose(
       R.filter((g) => g.length === 1),
       R.groupWith(R.eqProps('position')),
       R.sortWith([R.descend(R.prop('position'))]),
     )(tiebreakTable)
-
     table = updatePositions(table, tiegroups)
     // const tiebreakgroups = groupTeams(prop)(tiebreakTable)
     // table = updatePositions(table, tiebreakgroups)
@@ -128,25 +128,25 @@ const tiebbreakRuleFn = R.curry(function (matches, rules, table) {
   return table
 })
 
-function updatePositions(table, groups) {
-  const list = groups.flat()
+function updatePositions(groups) {
   let teamIndex = 0
-  const positions = groups.reduce((acc, group) => {
-    if (group.length === 1) {
-      const index = list.findIndex((item) => item.team === group[0].team)
-      acc[group[0].team] = index
-      teamIndex++
-    } else {
-      group.forEach((item) => {
-        acc[item.team] = teamIndex
-      })
-    }
-    return acc
-  }, {})
+  return groups.reduce((acc, group) => {
+    acc = [
+      ...acc,
+      ...group.map((item) => {
+        if (!item.finalPosition) {
+          return {
+            ...item,
+            position: teamIndex++,
+            finalPosition: group.filter((item) => !item.finalPosition).length === 1,
+          }
+        }
+        return item
+      }),
+    ]
 
-  return R.map((item) => {
-    return { ...item, position: positions[item.team] }
-  })(table)
+    return acc
+  }, [])
 }
 const keyCombiner = R.curry(function compine(props, o) {
   return props.reduce((key, prop) => {
@@ -158,14 +158,15 @@ const keyCombiner = R.curry(function compine(props, o) {
 const sort = R.curry(function (prop, direction, table) {
   prop = Array.isArray(prop) ? prop : [prop]
   let sortProps = prop.map((prop) => (direction === 'ascend' ? R.ascend(R.prop(prop)) : R.descend(R.prop(prop))))
-  sortProps = [R.ascend(R.prop('position')), ...sortProps]
-  const groupProps = keyCombiner(['position', ...prop])
+  //sortProps = [R.ascend(R.prop('position')), ...sortProps]
+  const groupProps = keyCombiner([...prop])
   const groups = R.compose(
+    updatePositions,
     R.groupWith((a, b) => groupProps(a) === groupProps(b)),
     R.sortWith(sortProps),
   )(table)
 
-  return updatePositions(table, groups)
+  return groups
 })
 
 function drawingOfLots(table) {
