@@ -1,7 +1,7 @@
 import { standings } from './standings'
 
 describe('standings', () => {
-  it.only('sort table', () => {
+  it('sort table', () => {
     const matches = [
       {
         homeTeam: 'team a',
@@ -72,8 +72,6 @@ describe('standings', () => {
     ]
 
     const table = standings(matches, rules)
-
-    console.table(table)
     expect(table[0].team).toEqual('team b')
     expect(table[1].team).toEqual('team c')
     expect(table[2].team).toEqual('team a')
@@ -175,8 +173,6 @@ describe('standings', () => {
     ]
 
     const table = standings(matches, rules)
-
-    //console.table(table)
     expect(table[0].team).toEqual('team a')
     expect(table[1].team).toEqual('team b')
     expect(table[2].team).toEqual('team c')

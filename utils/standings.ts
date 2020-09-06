@@ -92,13 +92,8 @@ function filterMatches(matches) {
 }
 
 const tiebbreakRuleFn = R.curry(function (matches, rules, table) {
-  const groups = R.compose(
-    R.filter((g) => g.length > 1),
-    R.groupWith(R.eqProps('position')),
-    R.sortWith([R.descend(R.prop('position'))]),
-  )(table)
-
-  if (groups.length === 0) return table
+  const group = table.filter((item) => !item.finalPosition)
+  if (!group.length) return table
 
   const groupRules = rules
     .map((item) => {
@@ -109,22 +104,10 @@ const tiebbreakRuleFn = R.curry(function (matches, rules, table) {
     })
     .reverse()
 
-  groups.forEach((group) => {
-    let tiebreakTable = R.compose(generateTable, filterMatches(matches), R.map(R.prop('team')))(group)
-
-    tiebreakTable = R.compose(sortByPosition, ...groupRules)(tiebreakTable)
-    console.table(tiebreakTable)
-
-    const tiegroups = R.compose(
-      R.filter((g) => g.length === 1),
-      R.groupWith(R.eqProps('position')),
-      R.sortWith([R.descend(R.prop('position'))]),
-    )(tiebreakTable)
-    table = updatePositions(table, tiegroups)
-    // const tiebreakgroups = groupTeams(prop)(tiebreakTable)
-    // table = updatePositions(table, tiebreakgroups)
-  })
-
+  let tiebreakTable = R.compose(generateTable, filterMatches(matches), R.map(R.prop('team')))(group)
+  tiebreakTable = R.compose(sortByPosition, ...groupRules)(tiebreakTable)
+  console.table(table)
+  console.table(tiebreakTable)
   return table
 })
 
@@ -156,6 +139,7 @@ const keyCombiner = R.curry(function compine(props, o) {
 })
 
 const sort = R.curry(function (prop, direction, table) {
+  if (table.every((item) => item.finalPosition)) return table
   prop = Array.isArray(prop) ? prop : [prop]
   let sortProps = prop.map((prop) => (direction === 'ascend' ? R.ascend(R.prop(prop)) : R.descend(R.prop(prop))))
   //sortProps = [R.ascend(R.prop('position')), ...sortProps]
