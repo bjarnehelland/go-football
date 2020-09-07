@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { Grid, Input, Button } from 'theme-ui'
+import { Flex, Input, Button } from 'theme-ui'
 
 import { createTournament } from '@/lib/db'
 
@@ -14,11 +14,11 @@ export default function AddTournament() {
     router.push(`/tournaments/${tournament.id}`)
   }
   return (
-    <Grid>
+    <Flex>
       <Input value={name} onChange={(e) => setName(e.target.value)} />
       <Button onClick={handleCreateTournament} disabled={!name}>
         + Tournament
       </Button>
-    </Grid>
+    </Flex>
   )
 }
