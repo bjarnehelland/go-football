@@ -167,10 +167,6 @@ function drawingOfLots(table) {
       return item
     }),
   )(table)
-
-  // const teams = table.filter((item) => item.position !== undefined)
-
-  // return updatePositions(table, [])
 }
 
 const sortByPosition = R.sortWith([R.ascend(R.prop('position'))])
