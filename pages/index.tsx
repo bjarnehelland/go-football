@@ -1,6 +1,7 @@
 import Head from 'next/head'
-import { Flex, Heading, Link } from 'theme-ui'
+import { Flex, Heading } from 'theme-ui'
 import User from '@/components/User'
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -13,7 +14,7 @@ export default function Home() {
         <Heading>Go football</Heading>
         <User />
       </Flex>
-      <Link href="/tournaments" as="/tournaments">
+      <Link href="/tournaments" as={'/tournaments'}>
         <a>Tournaments</a>
       </Link>
     </div>
