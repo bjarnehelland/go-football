@@ -76,7 +76,7 @@ export default function Tournament({ tournament }) {
         <title>Go football - {tournament?.name}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1>{tournament.name}</h1>
+      <h1>{tournament?.name}</h1>
 
       <WorldCupTieBreakerRules />
       <EuroTieBreakerRules />
