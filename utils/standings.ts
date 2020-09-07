@@ -77,14 +77,6 @@ function shuffle(array) {
   return array
 }
 
-function groupTeams(prop) {
-  return R.compose(
-    R.groupWith(R.eqProps(prop)),
-    R.sortWith([R.descend(R.prop(prop))]),
-    R.filter(R.propEq('position', undefined)),
-  )
-}
-
 function filterMatches(matches) {
   return function (teams) {
     return matches.filter((match) => teams.includes(match.homeTeam) && teams.includes(match.awayTeam))
@@ -106,23 +98,38 @@ const tiebbreakRuleFn = R.curry(function (matches, rules, table) {
 
   let tiebreakTable = R.compose(generateTable, filterMatches(matches), R.map(R.prop('team')))(group)
   tiebreakTable = R.compose(sortByPosition, ...groupRules)(tiebreakTable)
-  console.table(table)
-  console.table(tiebreakTable)
-  return table
+
+  const positions = tiebreakTable.reduce((acc, item) => {
+    if (item.finalPosition) {
+      acc[item.team] = item.position
+    }
+    return acc
+  }, {})
+
+  return table.map((item) => {
+    if (positions[item.team] !== undefined) {
+      return { ...item, position: item.position + positions[item.team], finalPosition: true }
+    }
+    return item
+  })
 })
 
 function updatePositions(groups) {
   let teamIndex = 0
-  return groups.reduce((acc, group) => {
+  return groups.reduce((acc, group, groupIndex) => {
     acc = [
       ...acc,
       ...group.map((item) => {
         if (!item.finalPosition) {
-          return {
+          const isFinalPosition = group.filter((item) => !item.finalPosition).length === 1
+          const newItem = {
             ...item,
-            position: teamIndex++,
-            finalPosition: group.filter((item) => !item.finalPosition).length === 1,
+            position: isFinalPosition ? teamIndex : groupIndex,
+            finalPosition: isFinalPosition,
           }
+
+          teamIndex++
+          return newItem
         }
         return item
       }),
